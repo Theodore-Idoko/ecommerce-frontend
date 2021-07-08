@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { getCategories } from './apiCore';
+import { getCategories,list } from './apiCore';
 import Card from './Card';
 
 const Search = () => {
@@ -27,7 +27,17 @@ const Search = () => {
   }, [])
 
   const searchData = () => {
-    console.log(search, category)
+    if(search) {
+      list({ search: search || undefined, category: category}).then(
+        response => {
+          if(response.error) {
+            console.log(response.error)
+          } else {
+            setData({...data, results: response, searched: true})
+          }
+        }
+      )
+    }
   }
 
   const searchSubmit = (e) => {
@@ -37,6 +47,30 @@ const Search = () => {
 
   const handleChange = name => event => {
     setData({...data, [name] : event.target.value, searched: false})
+  }
+
+  const searchMessage= (searched, results) => {
+    if(searched && results.length > 0) {
+      return `Found ${results.length} products`;
+    } 
+    if (searched && results.length < 1) {
+      return `No products found`
+    }
+  } 
+
+  const searchedProducts = (results = []) => {
+    return (
+      <div>
+        <h4 className='mt-4 mb-4'>
+          {searchMessage(searched, results)}
+        </h4>
+        <div className='row'>
+        {results.map((product, i) => (
+          <Card Key={i} product={product} />
+        ))}
+      </div>
+      </div>
+    )
   }
 
   const searchForm = () => {
@@ -65,6 +99,9 @@ const Search = () => {
   return (
     <div className='row'>
       <div className='container mb-3'>{searchForm()}</div>
+      <div className='container-fluid mb-3'>
+        {searchedProducts(results)}
+      </div>
     </div>
   )
 };
