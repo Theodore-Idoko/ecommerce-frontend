@@ -42,10 +42,10 @@ const AdminDashboard = () => {
     <Layout title='AdminDashboard' description={`G'day ${name}!`} className='container-fluid'>
      
       <div className='row'>
-        <div className='col-3'>
+        <div className='col-md-3 mb-5'>
           {adminLinks()}
         </div>
-        <div className='col-9'>
+        <div className='col-md-9'>
           {adminInfo()}
         </div>
       </div>
